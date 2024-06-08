@@ -143,18 +143,12 @@ export const WixLogin = ({
           }
         }}
         injectedJavaScript={`
-          const observer = new MutationObserver(mutations => {
-              if (document.querySelector('[data-testid="xButton"]:not([data-marked=true])')) {
-                $('[data-testid="xButton"]').addEventListener('click', () => window.postMessage('__wix_login_rn_close'))
-                $('[data-testid="xButton"]').setAttribute('data-marked', 'true');
-              }
-          });
-
-          // If you get "parameter 1 is not of type 'Node'" error, see https://stackoverflow.com/a/77855838/492336
-          observer.observe(document.body, {
-              childList: true,
-              subtree: true
-          });
+          setInterval(() => {
+            if (document.querySelector('[data-testid="xButton"]:not([data-marked=true])')) {
+              document.querySelector('[data-testid="xButton"]').addEventListener('click', () => window.postMessage('__wix_login_rn_close'));
+              document.querySelector('[data-testid="xButton"]').setAttribute('data-marked', 'true');
+            }
+          }, 1000)
         `}
       />
     </SafeAreaView>
