@@ -26,6 +26,8 @@ export interface WixLoginProps {
   client: IOAuthClient;
   /** A callback that is called with the logged in member's credential tokens */
   onLoginComplete(tokens: Tokens): void;
+  /** Optional. A callback that is called if the user aborts login */
+  onLoginCanceled?(): void;
   /** Optional. Override the builtin callback URL from the login flow. Use only if you need deeper control of the app's deep linking features */
   customCallbackUrl?: string;
 }
@@ -52,6 +54,7 @@ export interface WixLoginProps {
 export const WixLogin = ({
   client,
   onLoginComplete,
+  onLoginCanceled,
   customCallbackUrl,
 }: WixLoginProps) => {
   const isMounted = useRef(false);
@@ -133,6 +136,13 @@ export const WixLogin = ({
             throw new UnauthorizedCallbackUrl(callbackUrl);
           }
         }}
+        onMessage={(e) => {
+          if (e.nativeEvent.data === '__wix_login_rn_close') {
+            onLoginCanceled?.();
+            setIsModalOpen(false);
+          }
+        }}
+        injectedJavaScript={`$('[data-testid="xButton"]').addEventListener('click', () => window.postMessage('__wix_login_rn_close'))`}
       />
     </SafeAreaView>
   );

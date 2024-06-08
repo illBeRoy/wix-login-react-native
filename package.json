@@ -13,7 +13,7 @@
     "auth"
   ],
   "license": "ISC",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packageManager": "yarn@4.2.2",
   "main": "dist/index.js",
   "files": [
