@@ -11,6 +11,8 @@ import {
   Modal,
   StyleSheet,
   SafeAreaView,
+  Image,
+  TouchableOpacity,
 } from 'react-native';
 import * as Crypto from 'expo-crypto';
 import * as Linking from 'expo-linking';
@@ -26,6 +28,8 @@ export interface WixLoginProps {
   client: IOAuthClient;
   /** A callback that is called with the logged in member's credential tokens */
   onLoginComplete(tokens: Tokens): void;
+  /** Optional. If true, allows the user to cancel the login process by clicking the "close" button */
+  allowUserToCancelLogin?: boolean;
   /** Optional. A callback that is called if the user aborts login */
   onLoginCanceled?(): void;
   /** Optional. Override the builtin callback URL from the login flow. Use only if you need deeper control of the app's deep linking features */
@@ -55,6 +59,7 @@ export const WixLogin = ({
   client,
   onLoginComplete,
   onLoginCanceled,
+  allowUserToCancelLogin = false,
   customCallbackUrl,
 }: WixLoginProps) => {
   const isMounted = useRef(false);
@@ -128,29 +133,45 @@ export const WixLogin = ({
 
   const renderWebview = () => (
     <SafeAreaView style={styles.webviewContainer}>
-      <WebView
-        source={{ uri: authUrl }}
-        onHttpError={(e) => {
-          if (e.nativeEvent.statusCode === 400) {
-            setIsModalOpen(false);
-            throw new UnauthorizedCallbackUrl(callbackUrl);
-          }
-        }}
-        onMessage={(e) => {
-          if (e.nativeEvent.data === '__wix_login_rn_close') {
-            onLoginCanceled?.();
-            setIsModalOpen(false);
-          }
-        }}
-        injectedJavaScript={`
-          setInterval(() => {
-            if (document.querySelector('[data-testid="xButton"]:not([data-marked=true])')) {
-              document.querySelector('[data-testid="xButton"]').addEventListener('click', () => window.postMessage('__wix_login_rn_close'));
-              document.querySelector('[data-testid="xButton"]').setAttribute('data-marked', 'true');
+      <View style={styles.webviewContainer}>
+        <WebView
+          source={{ uri: authUrl }}
+          onHttpError={(e) => {
+            if (e.nativeEvent.statusCode === 400) {
+              setIsModalOpen(false);
+              throw new UnauthorizedCallbackUrl(callbackUrl);
             }
-          }, 1000)
+          }}
+          injectedJavaScriptBeforeContentLoaded={`
+          function removeCloseButton() {
+            const xButton = document.querySelector('[data-testid="xButton"]');
+            if (xButton) {
+              xButton.remove();
+            } else {
+              setTimeout(removeCloseButton, 50);
+            }
+          }
+
+          removeCloseButton();
         `}
-      />
+        />
+        {allowUserToCancelLogin && (
+          <TouchableOpacity
+            onPress={() => {
+              onLoginCanceled?.();
+              setIsModalOpen(false);
+            }}
+            style={styles.closeButtonContainer}
+          >
+            <View style={styles.closeButton}>
+              <Image
+                source={require('../assets/close-icon.png')}
+                style={styles.closeButtonIcon as any}
+              />
+            </View>
+          </TouchableOpacity>
+        )}
+      </View>
     </SafeAreaView>
   );
 
@@ -172,5 +193,23 @@ const styles = StyleSheet.create({
   webviewContainer: {
     flex: 1,
     width: '100%',
+  },
+  closeButtonContainer: {
+    position: 'absolute',
+    top: 0,
+    right: 15,
+  },
+  closeButton: {
+    width: 50,
+    height: 50,
+    backgroundColor: 'white',
+    // @ts-expect-error borderRadius does in fact support percentage
+    borderRadius: '50%',
+    padding: 10,
+  },
+  closeButtonIcon: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'contain',
   },
 });

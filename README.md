@@ -90,3 +90,27 @@ And under "Allowed authorization redirect URIs", add the URL provided to you fro
 ![Allowed URIs](wix-settings-3.png)
 
 > **⚠️ Important**: If you’re using Expo Go, the trusted “callback URL” will change once you build your own binary, so make sure to register the production version of your callback URL before you release your app.
+
+### Additional Features
+#### Enabling User to Cancel Login
+
+To provide users the option to cancel the login process, you can utilize the `allowUserToCancelLogin` prop:
+
+```jsx
+<WixLogin
+    client={/* ... */}
+    onLoginComplete={/* ... */}
+    allowUserToCancelLogin
+  />
+```
+
+Furthermore, if you need to handle scenarios where the user cancels the login, you can supply a callback function to the `onLoginCanceled` prop:
+
+```jsx
+<WixLogin
+    client={/* ... */}
+    onLoginComplete={/* ... */}
+    allowUserToCancelLogin
+    onLoginCanceled={() => { /* do something */ }}
+  />
+```
