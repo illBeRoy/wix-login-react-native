@@ -4,7 +4,7 @@ This is a React Native component that encapsulates Wix's "Managed Login" flow, a
 
 <p align="center">
 
-<img src="component-screenshot.png" width="200" />
+<img src="component-screenshot.png" width="300" />
 
 </p>
 
@@ -72,7 +72,7 @@ The first time you open the login modal, it may throw an error because you need 
 
 <p align="center">
 
-<img src="callback-url-error.png" width="200" />
+<img src="callback-url-error.png" width="300" />
 
 </p>
 
