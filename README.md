@@ -2,11 +2,11 @@
 
 This is a React Native component that encapsulates Wix's "Managed Login" flow, allowing users to integrate it seamlessly into their app. By using the `<WixLogin />` component at the root of your app, you get a login modal that you can open from anywhere in your app, and calls a callback when the user is fully logged in.
 
-<center>
+<p align="center">
 
 <img src="component-screenshot.png" width="200" />
 
-</center>
+</p>
 
 ## Installation
 
@@ -70,11 +70,11 @@ const SomeComponent = () => {
 ### Authorizing your app with Wix
 The first time you open the login modal, it may throw an error because you need to configure Wix to trust your app:
 
-<center>
+<p align="center">
 
 <img src="callback-url-error.png" width="200" />
 
-</center>
+</p>
 
 In order to make Wix trust your app, go to https://manage.wix.com and choose your Headless project.
 
