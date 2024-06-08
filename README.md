@@ -2,6 +2,8 @@
 
 This is a React Native component that encapsulates Wix's "Managed Login" flow, allowing users to integrate it seamlessly into their app. By using the `<WixLogin />` component at the root of your app, you get a login modal that you can open from anywhere in your app, and calls a callback when the user is fully logged in.
 
+For more information about Wix's Managed Login Flow, head over to the [Wix Headless documentation](https://dev.wix.com/docs/go-headless/coding/java-script-sdk/visitors-and-members/handle-members-with-wix-managed-login).
+
 <p align="center">
 
 <img src="component-screenshot.png" width="300" />
