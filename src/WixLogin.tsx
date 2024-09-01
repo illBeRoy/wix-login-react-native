@@ -1,9 +1,4 @@
-import {
-  OauthData,
-  type IOAuthStrategy,
-  type Tokens,
-  type WixClient,
-} from '@wix/sdk';
+import { OauthData, type Tokens, type WixClient } from '@wix/sdk';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
@@ -17,15 +12,18 @@ import {
 import * as Crypto from 'expo-crypto';
 import * as Linking from 'expo-linking';
 import WebView from 'react-native-webview';
-import { TooManyComponentsError, UnauthorizedCallbackUrl } from './errors';
+import {
+  ClientIsNotOAuthClientError,
+  TooManyComponentsError,
+  UnauthorizedCallbackUrl,
+} from './errors';
 import { global } from './global';
 import { DEFAULT_CALLBACK_URL } from './const';
-
-type IOAuthClient = WixClient<undefined, IOAuthStrategy>;
+import { isOAuthClient } from './isOAuthClient';
 
 export interface WixLoginProps {
   /** Your app's Wix client. It must use OAuthStrategy */
-  client: IOAuthClient;
+  client: WixClient;
   /** A callback that is called with the logged in member's credential tokens */
   onLoginComplete(tokens: Tokens): void;
   /** Optional. If true, allows the user to cancel the login process by clicking the "close" button */
@@ -90,6 +88,10 @@ export const WixLogin = ({
   }, []);
 
   useEffect(() => {
+    if (!isOAuthClient(client)) {
+      throw new ClientIsNotOAuthClientError();
+    }
+
     if (isModalOpen) {
       // @ts-expect-error we're monkey patching crypto
       globalThis.crypto = Crypto;
@@ -110,6 +112,10 @@ export const WixLogin = ({
   }
 
   async function onLoginCallback(withUrl: string) {
+    if (!isOAuthClient(client)) {
+      throw new ClientIsNotOAuthClientError();
+    }
+
     if (!isMounted.current || !oAuthData.current) {
       return;
     }

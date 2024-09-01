@@ -23,6 +23,15 @@ export class TooManyComponentsError extends WixLoginError {
   }
 }
 
+export class ClientIsNotOAuthClientError extends WixLoginError {
+  constructor() {
+    super(
+      'The client object passed to the <WixLogin client={client} /> component is not an OAuth client.\n' +
+        'Please make sure to pass a client that uses the OAuthStrategy.',
+    );
+  }
+}
+
 export class UnauthorizedCallbackUrl extends WixLoginError {
   constructor(callbackUrl: string) {
     super(

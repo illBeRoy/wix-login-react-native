@@ -8273,6 +8273,13 @@ __metadata:
     react-native-webview: "npm:^13.10.3"
     typescript: "npm:^5.4.5"
     typescript-eslint: "npm:^7.12.0"
+  peerDependencies:
+    "@wix/sdk": "*"
+    expo-crypto: "*"
+    expo-linking: "*"
+    react: "*"
+    react-native: "*"
+    react-native-webview: "*"
   languageName: unknown
   linkType: soft
 
