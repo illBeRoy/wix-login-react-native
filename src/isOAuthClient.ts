@@ -4,9 +4,9 @@ export const isOAuthClient = (
   wix: WixClient,
 ): wix is WixClient<undefined, IOAuthStrategy> => {
   return (
-    'generateOAuthData' in wix &&
-    'getAuthUrl' in wix &&
-    'parseFromUrl' in wix &&
-    'getMemberTokens' in wix
+    'generateOAuthData' in wix.auth &&
+    'getAuthUrl' in wix.auth &&
+    'parseFromUrl' in wix.auth &&
+    'getMemberTokens' in wix.auth
   );
 };
